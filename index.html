@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	  <meta charset="utf-8">
+	  <meta name="apple-mobile-web-app-title" content="过程管理">
+	   <title>过程管理</title>
+	   <link rel="stylesheet" media="all" href="./lib/base.css">
+	    <script type="text/javascript" src="./lib/nebulas.js"></script>
+	    <script type="text/javascript" src="./lib/nebPay.js"></script>
+	    <script type="text/javascript" src="./lib/jquery-3.3.1.min.js"></script>
+	   <style type="text/css">
+	   @charset "UTF-8";
+	   </style>
+	</head>
+
+  <body class="reader-black-font" lang="zh-CN">
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	  <div class="width-limit">
+	    <a class="logo" href="/"></a>
+	    <div class="container">
+	      <div class="collapse navbar-collapse" id="menu">
+	        <ul class="nav navbar-nav">
+	            <li class="tab ">
+	              <a href="./index.html"><span class="menu-text">生产过程录入</span>
+	                <i class="iconfont ic-navigation-discover menu-icon"></i></a> 
+	           </li>
+	           <li class="search">
+	            <form target="_blank" action="/search" accept-charset="UTF-8" method="get">
+	              <input name="q" id="q" value="" autocomplete="off" placeholder="过程追踪" class="search-input" type="text">
+	              <a class="search-btn" href="javascript:void(null)"><i class="iconfont ic-search"></i></a>
+				</form>          
+			  </li>
+	        </ul>
+	      </div>
+	    </div>
+	  </div>
+	</nav>
+
+ <script type="text/javascript">
+ 
+ 
+ $(function(){
+ var timestamp=new Date().getTime();
+	$("#optime").val(timestamp);
+	$("#unique_id").blur(function(){
+		var id=$("#unique_id").val()+"-"+$("#optime").val();
+		$("#unique_node").val(id);
+	});
+	
+ });
+ </script>   
+ 
+	<div class="container">
+	   <div class="easyui-layout"  data-options="fit:true,border:false">
+	<div  style="border: 1px solid gray; margin:30px; padding: 5px; height: 570px;;">
+		<div  style="border: 1px solid gray; padding: 20px;height: 557px; text-align: center; ">
+		<form id="dataform" method="post">
+			<input type="hidden" id="uuid" name="uuid"/>
+			<input type="hidden" id="oper" name="oper" value="edit"/>
+	    	<table border="0" style="width: 100%">
+	    		<tr height="50px;">
+	    			<td style="width:15%;" align="right">唯一标识码：</td>
+	    			<td style="width:35%;" align="left">
+			        	<input class="form-control"  type="text" name="unique_id" id="unique_id" style="width:90%;"></input>
+	    			</td>
+	    		</tr>
+<!-- 	    		<tr height="50px;">		 -->
+<!-- 	    			<td style="width:15%;" align="right">提交者：</td> -->
+<!-- 	    			<td style="width:35%;" align="left"> -->
+<!-- 			        	<input class="form-control"  type="text" name="birthday" id="birthday"  style="width:90%;"></input> -->
+<!-- 	    			</td> -->
+<!-- 	    		</tr> -->
+	    		<tr height="50px;">		
+	    			<td style="width:15%;" align="right">过程数据：</td>
+	    			<td style="width:35%;" align="left">
+	    			</td>
+	    		</tr>
+<!-- 	    		<tr height="50px;">	 -->
+	    		
+<!-- 	    			<td style="width:15%;" align="right">地点：</td> -->
+<!-- 	    			<td style="width:35%;" align="left"> -->
+	    				<input class="form-control"  type="hidden" name="optime" id="optime"   style="width:90%;"></input>
+			            <input class="form-control"  type="hidden" name="place" id="place" value="一号流水线"  style="width:90%;" ></input>
+<!-- 	    			</td> -->
+<!-- 	    		</tr> -->
+<!-- 	    		<tr height="50px;">	 -->
+<!-- 	    			<td style="width:15%;" align="right">操作人员：</td> -->
+<!-- 	    			<td style="width:35%;" align="left"> -->
+<!-- 	    			<input class="form-control"  type="text" name="operator" id="operator"   style="width:90%;" ></input> -->
+<!-- 	    			</td> -->
+<!-- 	    		</tr> -->
+	    		<tr height="50px;">	
+	    			<td style="width:15%;" align="right">操作内容：</td>
+	    			<td style="width:35%;" align="left">
+	    			<textarea class="form-control"  name="content" id="content" rows="" cols=""  style="width:90%;" ></textarea>
+	    			</td>
+	    		</tr>
+	    		<tr height="50px;">	
+	    			<td style="width:15%;" align="right">过程节点唯一id：</td>
+	    			<td style="width:35%;" align="left">
+	    			<input class="form-control"  type="text" name="unique_node" id="unique_node"  style="width:90%;" ></input>
+	    			</td>
+	    		</tr>
+	    		<tr height="50px;">	
+	    			<td style="width:15%;" align="right">前置过程节点唯一id集合：</td>
+	    			<td style="width:35%;" align="left">
+	    			<input class="form-control"  type="text" name="pre_nodes" id="pre_nodes"  style="width:90%;" ></input>
+	    			</td>
+	    		</tr>
+	    		<tr height="50px;">	
+	    			<td style="width:15%;" colspan="3" align="center">
+	    			<button class="btn btn-info"  id=post>提交</button>
+	    		</td>
+	    		</tr>
+	    	</table>
+	    </form>
+	</div>
+	</div>
+</div>
+	</div>
+
+
+<script>
+    "use strict";
+    var dappContactAddress = "n1dxEfuKE1xqrCCg6jRgQntA5PT9s63gHhp";
+    var nebulas = require("nebulas"), Account = Account, neb = new nebulas.Neb();
+    neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"))
+    var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
+    var nebPay = new NebPay();
+    var serialNumber;
+    
+    
+    
+    //保存
+    $('#post').click(function () {
+        if (!$("#unique_id").val()) {
+            alert('产品唯一标识码不能为空');
+            return;
+        }
+        var to = dappContactAddress;
+        var value = "0";
+        var callFunction = "save";
+        var callArgs = "[\"" + $("#unique_node").val() + "\",\"" + $("#unique_id").val() +"\",\"" + $("#optime").val() +"\",\"" + $("#place").val()  +"\",\"" + $("#content").val() +"\",\"" + $("#unique_node").val() +"\",\"" + $("#pre_nodes").val() + "\"]";
+        console.log(callArgs);
+        serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+            listener: function (resp) {
+                console.log("thecallback is " + resp)
+            }
+        });
+    })
+    
+</script>
+  
+
+</body></html>
